@@ -16,6 +16,7 @@ use PGUtil qw(pretty_print);
 use WeBWorK::PG::IO  qw(fileFromPath);
 use utf8;
 use v5.12;
+use Data::Dumper;
 binmode(STDOUT,":encoding(UTF-8)");
 #use PadWalker;     # used for processing error messages
 #use Data::Dumper;
@@ -975,7 +976,7 @@ case the previously defined safe compartment is used. (See item 1.)
 # FIXME The various warning message tracks are still being sorted out
 # WARNING and DEBUG tracks are being handled elsewhere (in Problem.pm?)
 #######################################################################
-				$self->{errors} .= "ERRORS from evaluating PG file: <br/> $@<br/>\n" if $@;
+				$self->{errors} .= "ERRORS from evaluating PG file: <br/>".$@->to_string."<br/>\n" if $@;
 
 #######################################################################
 

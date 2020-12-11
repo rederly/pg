@@ -4,6 +4,7 @@ package Value::Complex;
 my $pkg = 'Value::Complex';
 
 use strict; no strict "refs";
+use Data::Dumper;
 our @ISA = qw(Value);
 our $i; our $pi;
 
@@ -19,6 +20,8 @@ sub new {
   my $self = shift; my $class = ref($self) || $self;
   my $context = (Value::isContext($_[0]) ? shift : $self->context);
   my $x = shift; $x = [$x,@_] if scalar(@_) > 0;
+  (ref($x) eq 'ARRAY') ? warn "VALUE::COMPLEX -- Complex number from array: ".join(',',@$x)."\n" : 
+    warn "VALUE::COMPLEX -- Complex number being created: $x\n";
   return $x->inContext($context) if Value::isComplex($x) || (Value::isFormula($x) && $x->{tree}->isComplex);
   $x = $x->data if Value::isReal($x);
   $x = [$x] unless ref($x) eq 'ARRAY'; $x->[1] = 0 unless defined($x->[1]);
@@ -112,6 +115,7 @@ sub div {
 sub power {
   my ($self,$l,$r,$other) = Value::checkOpOrderWithPromote(@_);
   my ($a,$b) = $l->value; my ($c,$d) = $r->value;
+  warn "VALUE::COMPLEX -- exponentiation $a $b ^ $c $d\n";
   return $self->inherit($other)->make(1,0) if ($a->value == 1 && $b->value == 0) || ($c->value == 0 && $d->value == 0);
   return $self->inherit($other)->make(0,0) if $c->value > 0 && ($a->value == 0 && $b->value == 0);
   return exp($r * log($l))
@@ -336,6 +340,7 @@ sub format {
   $a->{format} = $b->{format} = $format if defined $format;
   my $bi = 'i';
   return $a->$method($equation) if $b == 0;
+  warn "VALUE::COMPLEX -- formatting: $format of ".$a->stringify." and ".$b->stringify."\n";
   $bi = CORE::abs($b)->with(format=>$format)->$method($equation,1) . 'i' if CORE::abs($b) !~ m/^1(\.0*)?$/;
   $bi = '-' . $bi if $b < 0;
   return $bi if $a == 0;

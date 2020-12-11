@@ -387,6 +387,7 @@ sub makeValue {
   }
   return $context->Package("Real")->make($context,$x) if matchNumber($x);
   if (matchInfinite($x)) {
+    warn "VALUE::makeValue -- making an 'Infinity' from $x\n";
     my $I = $context->Package("Infinity")->new($context);
     $I = $I->neg if $x =~ m/^$context->{pattern}{-infinity}$/;
     return $I;
@@ -943,6 +944,7 @@ sub transferTolerances {
 
 sub stringify {
   my $self = shift;
+  warn "VALUE: stringify-ing ".$self->string."\n";
   return $self->TeX if Value->context->flag('StringifyAsTeX');
   return $self->string;
 }
